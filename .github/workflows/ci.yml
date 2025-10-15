@@ -24,10 +24,10 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: dotnet restore
-        run: dotnet restore ./RealEstate.sln
+        run: dotnet restore ./RealEstateAgency.sln
 
       - name: Build solution
-        run: dotnet build ./RealEstate.sln --no-restore
+        run: dotnet build ./RealEstateAgency.sln --no-restore
 
       - name: Run tests
         run: dotnet test ./RealEstate.Tests/RealEstate.Tests.csproj --no-build --verbosity detailed
