@@ -1,16 +1,10 @@
 ﻿namespace RealEstate.Domain.Models;
 
 /// <summary>
-/// The purpose of a property
+/// Intended use of a property (functional purpose).
 /// </summary>
 public enum PropertyPurpose
 {
-    /// <summary>
-    /// Property intended for commercial use
-    /// </summary>
-    Commercial,
-    /// <summary>
-    /// Property intended for residential use
-    /// </summary>
-    Residential
+    Residential,
+    Commercial
 }
