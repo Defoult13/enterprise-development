@@ -6,9 +6,9 @@
 public sealed class RealEstateObject
 {
     /// <summary>
-    /// Unique identifier of the real-estate object.
+    /// Integer identifier assigned explicitly in seed/data layer.
     /// </summary>
-    public Guid Id { get; init; } = Guid.NewGuid();
+    public int Id { get; init; }
 
     /// <summary>
     /// Type of the object (apartment, house, office, etc.).

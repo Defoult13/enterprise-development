@@ -6,9 +6,9 @@
 public sealed class Counterparty
 {
     /// <summary>
-    /// Unique identifier of the client.
+    /// Integer identifier assigned explicitly in seed/data layer.
     /// </summary>
-    public Guid Id { get; init; } = Guid.NewGuid();
+    public int Id { get; init; }
 
     /// <summary>
     /// Full name of the client.

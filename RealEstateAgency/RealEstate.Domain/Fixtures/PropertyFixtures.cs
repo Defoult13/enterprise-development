@@ -1,118 +1,83 @@
-﻿using RealEstate.Domain.Models;
+﻿using RealEstateAgency.Domain.Models;
 
-namespace RealEstate.Domain.Fixtures;
+namespace RealEstateAgency.Domain.DataSeeder;
 
 /// <summary>
-/// In-memory seed data for tests or demos (EF-friendly):
-/// int keys, FK fields, navigation wiring, and required initializers.
+/// Provides in-memory seed data (clients, properties, requests) for unit tests and demos.
 /// </summary>
-public sealed class RealEstateFixture
+public sealed class RealEstateDataSeeder
 {
-    public IReadOnlyList<Counterparty> Counterparties { get; }
-    public IReadOnlyList<Property> Properties { get; }
-    public IReadOnlyList<Application> Applications { get; }
+    /// <summary>
+    /// Seeded clients.
+    /// </summary>
+    public List<Counterparty> Counterparties { get; }
 
-    public RealEstateFixture()
+    /// <summary>
+    /// Seeded real-estate objects.
+    /// </summary>
+    public List<RealEstateObject> Properties { get; }
+
+    /// <summary>
+    /// Seeded client requests (buy/sell).
+    /// </summary>
+    public List<Request> Requests { get; }
+
+    public RealEstateDataSeeder()
     {
-        // --- Clients ---
-        var c = new List<Counterparty>
-        {
-            NewClient(1, "Иванов Иван",    "4010 111111", "+7-900-000-01-01"),
-            NewClient(2, "Петров Пётр",    "4010 222222", "+7-900-000-02-02"),
-            NewClient(3, "Сидоров Степан", "4010 333333", "+7-900-000-03-03"),
-            NewClient(4, "Антонова Анна",  "4010 444444", "+7-900-000-04-04"),
-            NewClient(5, "Кузнецов Кирилл","4010 555555", "+7-900-000-05-05"),
-            NewClient(6, "Соколова Света", "4010 666666", "+7-900-000-06-06"),
-            NewClient(7, "Романов Роман",  "4010 777777", "+7-900-000-07-07"),
-            NewClient(8, "Фёдорова Фаина", "4010 888888", "+7-900-000-08-08"),
-            NewClient(9, "Морозов Максим", "4010 999999", "+7-900-000-09-09"),
-            NewClient(10,"Ким Денис",      "4010 101010", "+7-900-000-10-10"),
-            NewClient(11,"Осипова Олеся",  "4010 111112", "+7-900-000-11-11"),
-            NewClient(12,"Громов Григорий","4010 121212", "+7-900-000-12-12"),
-        };
-        Counterparties = c;
-
-        // --- Properties ---
-        var p = new List<Property>
-        {
-            NewProp(1, PropertyType.Apartment, PropertyPurpose.Residential, "77:01:0001001:1", "Москва, ул. Первая, 1", 17, 52.3, 2, 2.7, 7, false),
-            NewProp(2, PropertyType.House,     PropertyPurpose.Residential, "50:01:0002002:2", "МО, Мытищи, ул. Лесная, 3", 2, 180, 5, 3.0, null, false),
-            NewProp(3, PropertyType.Office,    PropertyPurpose.Commercial,  "78:01:0003003:3", "СПб, Невский 10", 8, 95, 4, 3.2, 3, true),
-            NewProp(4, PropertyType.Land,      PropertyPurpose.Residential, "23:01:0004004:4", "Краснодарский край, уч. 45", 0, 10_00, 0, 0, null, false),
-            NewProp(5, PropertyType.Warehouse, PropertyPurpose.Commercial,  "66:01:0005005:5", "Екатеринбург, Промзона 12", 1, 450, 1, 6, 1, true),
-            NewProp(6, PropertyType.Apartment, PropertyPurpose.Residential, "77:01:0006006:6", "Москва, ул. Вторая, 5", 25, 40, 1, 2.6, 16, false),
-            NewProp(7, PropertyType.Apartment, PropertyPurpose.Residential, "77:01:0007007:7", "Москва, ул. Третья, 7", 25, 36, 1, 2.6, 12, false),
-            NewProp(8, PropertyType.House,     PropertyPurpose.Residential, "50:01:0008008:8", "МО, Балашиха, Заречная 8", 2, 140, 4, 2.9, null, false),
-            NewProp(9, PropertyType.Office,    PropertyPurpose.Commercial,  "78:01:0009009:9", "СПб, Сенная, 2", 12, 120, 5, 3.3, 6, false),
-            NewProp(10, PropertyType.Apartment, PropertyPurpose.Residential, "77:01:0010010:0", "Москва, ул. Новая, 9", 22, 58, 3, 2.8, 9, false),
-            NewProp(11, PropertyType.Land,     PropertyPurpose.Residential, "23:01:0011011:1", "Краснодарский край, уч. 17", 0, 8_00, 0, 0, null, false),
-            NewProp(12, PropertyType.Retail,   PropertyPurpose.Commercial,  "66:01:0012012:2", "Екатеринбург, ТЦ «Океан»", 3, 75, 2, 3.4, 1, false),
-        };
-        Properties = p;
-
-        // --- Applications ---
-        var apps = new List<Application>
-        {
-            NewApp(1, c[0], p[0], ApplicationType.Sell, 5_000_000m,  new DateOnly(2024,06,15)),
-            NewApp(2, c[1], p[1], ApplicationType.Sell,10_000_000m,  new DateOnly(2024,07,20)),
-            NewApp(3, c[2], p[2], ApplicationType.Sell,15_000_000m,  new DateOnly(2024,05,10)),
-            NewApp(4, c[3], p[3], ApplicationType.Sell, 2_000_000m,  new DateOnly(2024,06,05)),
-            NewApp(5, c[0], p[4], ApplicationType.Sell, 3_000_000m,  new DateOnly(2023,01,01)), // Иванов = 2 продажи
-            NewApp(6, c[4], p[5], ApplicationType.Buy,  3_500_000m,  new DateOnly(2024,06,18)),
-            NewApp(7, c[5], p[6], ApplicationType.Buy,  1_000_000m,  new DateOnly(2024,06,19)),
-            NewApp(8, c[6], p[7], ApplicationType.Buy,  5_000_000m,  new DateOnly(2024,07,01)),
-            NewApp(9, c[5], p[8], ApplicationType.Buy,  2_000_000m,  new DateOnly(2024,07,02)),
-            NewApp(10, c[7], p[9], ApplicationType.Buy,  1_000_000m,  new DateOnly(2024,07,03)),
-            NewApp(11, c[7], p[10],ApplicationType.Buy,  1_200_000m,  new DateOnly(2024,07,04)),
-            NewApp(12, c[8], p[11],ApplicationType.Buy,  2_200_000m,  new DateOnly(2024,07,05)),
-            NewApp(13, c[4], p[0], ApplicationType.Buy,  4_100_000m,  new DateOnly(2024,08,01)),
-            NewApp(14, c[4], p[1], ApplicationType.Buy,  4_200_000m,  new DateOnly(2024,08,02)),
-            NewApp(15, c[2], p[5], ApplicationType.Sell, 7_000_000m,  new DateOnly(2024,07,15)),
-            NewApp(16, c[1], p[6], ApplicationType.Sell,12_000_000m,  new DateOnly(2024,08,10)),
-        };
-
-        foreach (var a in apps)
-        {
-            a.Client.Applications.Add(a);
-            a.Property.Applications.Add(a);
-        }
-
-        Applications = apps;
+        Counterparties = CreateCounterparties();
+        Properties = CreateProperties();
+        Requests = CreateRequests(Counterparties, Properties);
     }
 
-    private static Counterparty NewClient(int id, string name, string pass, string phone) =>
-        new() { Id = id, FullName = name, PassportNumber = pass, Phone = phone };
+    private static List<Counterparty> CreateCounterparties() => new()
+    {
+        new() { Id = 1,  FullName = "Иванов Иван",     PassportNumber = "4010 111111", Phone = "+7-900-000-01-01" },
+        new() { Id = 2,  FullName = "Петров Пётр",     PassportNumber = "4010 222222", Phone = "+7-900-000-02-02" },
+        new() { Id = 3,  FullName = "Сидоров Степан",  PassportNumber = "4010 333333", Phone = "+7-900-000-03-03" },
+        new() { Id = 4,  FullName = "Антонова Анна",   PassportNumber = "4010 444444", Phone = "+7-900-000-04-04" },
+        new() { Id = 5,  FullName = "Кузнецов Кирилл", PassportNumber = "4010 555555", Phone = "+7-900-000-05-05" },
+        new() { Id = 6,  FullName = "Соколова Света",  PassportNumber = "4010 666666", Phone = "+7-900-000-06-06" },
+        new() { Id = 7,  FullName = "Романов Роман",   PassportNumber = "4010 777777", Phone = "+7-900-000-07-07" },
+        new() { Id = 8,  FullName = "Фёдорова Фаина",  PassportNumber = "4010 888888", Phone = "+7-900-000-08-08" },
+        new() { Id = 9,  FullName = "Морозов Максим",  PassportNumber = "4010 999999", Phone = "+7-900-000-09-09" },
+        new() { Id = 10, FullName = "Ким Денис",       PassportNumber = "4010 101010", Phone = "+7-900-000-10-10" },
+        new() { Id = 11, FullName = "Осипова Олеся",   PassportNumber = "4010 111112", Phone = "+7-900-000-11-11" },
+        new() { Id = 12, FullName = "Громов Григорий", PassportNumber = "4010 121212", Phone = "+7-900-000-12-12" },
+    };
 
-    private static Property NewProp(
-        int id, PropertyType type, PropertyPurpose purpose, string cad, string address,
-        int storeys, double area, int rooms, double ceil, int? floor, bool hasEnc) =>
-        new()
-        {
-            Id = id,
-            Type = type,
-            Purpose = purpose,
-            CadastralNumber = cad,
-            Address = address,
-            StoreysTotal = storeys,
-            TotalArea = area,
-            Rooms = rooms,
-            CeilingHeight = ceil,
-            FloorNumber = floor,
-            HasEncumbrances = hasEnc
-        };
+    private static List<RealEstateObject> CreateProperties() => new()
+    {
+        new() { Id = 1,  Type = PropertyType.Apartment, Purpose = PropertyPurpose.Residential, CadastralNumber = "77:01:0001001:1",  Address = "Москва, ул. Первая, 1",          FloorsTotal = 17, TotalAreaSqM = 52.3m, Rooms = 2, CeilingHeightM = 2.7m, Floor = 7,  HasEncumbrances = false },
+        new() { Id = 2,  Type = PropertyType.House,     Purpose = PropertyPurpose.Residential, CadastralNumber = "50:01:0002002:2",  Address = "МО, Мытищи, ул. Лесная, 3",     FloorsTotal = 2,  TotalAreaSqM = 180m,  Rooms = 5, CeilingHeightM = 3.0m, Floor = null, HasEncumbrances = false },
+        new() { Id = 3,  Type = PropertyType.Office,    Purpose = PropertyPurpose.Commercial,  CadastralNumber = "78:01:0003003:3",  Address = "СПб, Невский 10",               FloorsTotal = 8,  TotalAreaSqM = 95m,   Rooms = 4, CeilingHeightM = 3.2m, Floor = 3,  HasEncumbrances = true  },
+        new() { Id = 4,  Type = PropertyType.Land,      Purpose = PropertyPurpose.Residential, CadastralNumber = "23:01:0004004:4",  Address = "Краснодарский край, уч. 45",    FloorsTotal = 0,  TotalAreaSqM = 1000m, Rooms = 0, CeilingHeightM = 0m,   Floor = null, HasEncumbrances = false },
+        new() { Id = 5,  Type = PropertyType.Warehouse, Purpose = PropertyPurpose.Commercial,  CadastralNumber = "66:01:0005005:5",  Address = "Екатеринбург, Промзона 12",    FloorsTotal = 1,  TotalAreaSqM = 450m,  Rooms = 1, CeilingHeightM = 6m,   Floor = 1,  HasEncumbrances = true  },
+        new() { Id = 6,  Type = PropertyType.Apartment, Purpose = PropertyPurpose.Residential, CadastralNumber = "77:01:0006006:6",  Address = "Москва, ул. Вторая, 5",         FloorsTotal = 25, TotalAreaSqM = 40m,   Rooms = 1, CeilingHeightM = 2.6m, Floor = 16, HasEncumbrances = false },
+        new() { Id = 7,  Type = PropertyType.Apartment, Purpose = PropertyPurpose.Residential, CadastralNumber = "77:01:0007007:7",  Address = "Москва, ул. Третья, 7",         FloorsTotal = 25, TotalAreaSqM = 36m,   Rooms = 1, CeilingHeightM = 2.6m, Floor = 12, HasEncumbrances = false },
+        new() { Id = 8,  Type = PropertyType.House,     Purpose = PropertyPurpose.Residential, CadastralNumber = "50:01:0008008:8",  Address = "МО, Балашиха, Заречная 8",     FloorsTotal = 2,  TotalAreaSqM = 140m,  Rooms = 4, CeilingHeightM = 2.9m, Floor = null, HasEncumbrances = false },
+        new() { Id = 9,  Type = PropertyType.Office,    Purpose = PropertyPurpose.Commercial,  CadastralNumber = "78:01:0009009:9",  Address = "СПб, Сенная, 2",               FloorsTotal = 12, TotalAreaSqM = 120m,  Rooms = 5, CeilingHeightM = 3.3m, Floor = 6,  HasEncumbrances = false },
+        new() { Id = 10, Type = PropertyType.Apartment, Purpose = PropertyPurpose.Residential, CadastralNumber = "77:01:0010010:0",  Address = "Москва, ул. Новая, 9",         FloorsTotal = 22, TotalAreaSqM = 58m,   Rooms = 3, CeilingHeightM = 2.8m, Floor = 9,  HasEncumbrances = false },
+        new() { Id = 11, Type = PropertyType.Land,      Purpose = PropertyPurpose.Residential, CadastralNumber = "23:01:0011011:1",  Address = "Краснодарский край, уч. 17",   FloorsTotal = 0,  TotalAreaSqM = 800m,  Rooms = 0, CeilingHeightM = 0m,   Floor = null, HasEncumbrances = false },
+        new() { Id = 12, Type = PropertyType.Retail,    Purpose = PropertyPurpose.Commercial,  CadastralNumber = "66:01:0012012:2",  Address = "Екатеринбург, ТЦ «Океан»",     FloorsTotal = 3,  TotalAreaSqM = 75m,   Rooms = 2, CeilingHeightM = 3.4m, Floor = 1,  HasEncumbrances = false },
+    };
 
-    private static Application NewApp(
-        int id, Counterparty client, Property property,
-        ApplicationType t, decimal amount, DateOnly date) =>
-        new()
-        {
-            Id = id,
-            ClientId = client.Id,
-            Client = client,
-            PropertyId = property.Id,
-            Property = property,
-            Type = t,
-            Amount = amount,
-            DateCreated = date
-        };
+    private static List<Request> CreateRequests(List<Counterparty> clients, List<RealEstateObject> props) => new()
+    {
+        new() { Id = 1,  Client = clients[0],  Property = props[0],  Type = RequestType.Sell, Amount = 5_000_000m,  CreatedAt = new DateOnly(2024,06,15) },
+        new() { Id = 2,  Client = clients[1],  Property = props[1],  Type = RequestType.Sell, Amount =10_000_000m,  CreatedAt = new DateOnly(2024,07,20) },
+        new() { Id = 3,  Client = clients[2],  Property = props[2],  Type = RequestType.Sell, Amount =15_000_000m,  CreatedAt = new DateOnly(2024,05,10) },
+        new() { Id = 4,  Client = clients[3],  Property = props[3],  Type = RequestType.Sell, Amount = 2_000_000m,  CreatedAt = new DateOnly(2024,06,05) },
+        new() { Id = 5,  Client = clients[0],  Property = props[4],  Type = RequestType.Sell, Amount = 3_000_000m,  CreatedAt = new DateOnly(2023,01,01) },
+        new() { Id = 6,  Client = clients[4],  Property = props[5],  Type = RequestType.Buy,  Amount = 3_500_000m,  CreatedAt = new DateOnly(2024,06,18) },
+        new() { Id = 7,  Client = clients[5],  Property = props[6],  Type = RequestType.Buy,  Amount = 1_000_000m,  CreatedAt = new DateOnly(2024,06,19) },
+        new() { Id = 8,  Client = clients[6],  Property = props[7],  Type = RequestType.Buy,  Amount = 5_000_000m,  CreatedAt = new DateOnly(2024,07,01) },
+        new() { Id = 9,  Client = clients[5],  Property = props[8],  Type = RequestType.Buy,  Amount = 2_000_000m,  CreatedAt = new DateOnly(2024,07,02) },
+        new() { Id = 10, Client = clients[7],  Property = props[9],  Type = RequestType.Buy,  Amount = 1_000_000m,  CreatedAt = new DateOnly(2024,07,03) },
+        new() { Id = 11, Client = clients[7],  Property = props[10], Type = RequestType.Buy,  Amount = 1_200_000m,  CreatedAt = new DateOnly(2024,07,04) },
+        new() { Id = 12, Client = clients[8],  Property = props[11], Type = RequestType.Buy,  Amount = 2_200_000m,  CreatedAt = new DateOnly(2024,07,05) },
+        new() { Id = 13, Client = clients[4],  Property = props[0],  Type = RequestType.Buy,  Amount = 4_100_000m,  CreatedAt = new DateOnly(2024,08,01) },
+        new() { Id = 14, Client = clients[4],  Property = props[1],  Type = RequestType.Buy,  Amount = 4_200_000m,  CreatedAt = new DateOnly(2024,08,02) },
+        new() { Id = 15, Client = clients[2],  Property = props[5],  Type = RequestType.Sell, Amount = 7_000_000m,  CreatedAt = new DateOnly(2024,07,15) },
+        new() { Id = 16, Client = clients[1],  Property = props[6],  Type = RequestType.Sell, Amount =12_000_000m,  CreatedAt = new DateOnly(2024,08,10) },
+    };
 }
