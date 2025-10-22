@@ -1,4 +1,4 @@
-﻿namespace RealEstateAgency.Domain.Models;
+﻿namespace RealEstate.Domain.Models;
 
 /// <summary>
 /// A client (counterparty) of the real estate agency.

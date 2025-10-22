@@ -1,8 +1,7 @@
-﻿﻿namespace RealEstateAgency.Domain.Models;
+﻿namespace RealEstate.Domain.Models;
 
 /// <summary>
 /// A client request to buy or sell a specific real-estate object.
-/// Pure domain model for in-memory usage (no ORM concerns).
 /// </summary>
 public sealed class Request
 {

@@ -1,4 +1,4 @@
-﻿namespace RealEstateAgency.Domain.Models;
+﻿namespace RealEstate.Domain.Models;
 
 /// <summary>
 /// Specific type of a real-estate object.

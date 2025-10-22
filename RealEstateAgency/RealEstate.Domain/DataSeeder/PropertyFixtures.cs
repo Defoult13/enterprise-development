@@ -1,6 +1,6 @@
-﻿using RealEstateAgency.Domain.Models;
+﻿using RealEstate.Domain.Models;
 
-namespace RealEstateAgency.Domain.DataSeeder;
+namespace RealEstate.Domain.DataSeeder;
 
 /// <summary>
 /// Provides in-memory seed data (clients, properties, requests) for unit tests and demos.

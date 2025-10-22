@@ -1,4 +1,4 @@
-﻿namespace RealEstateAgency.Domain.Models;
+﻿namespace RealEstate.Domain.Models;
 
 /// <summary>
 /// Functional purpose of a real-estate object.

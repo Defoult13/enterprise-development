@@ -1,4 +1,4 @@
-﻿namespace RealEstateAgency.Domain.Models;
+﻿namespace RealEstate.Domain.Models;
 
 /// <summary>
 /// A real-estate object with cadastral identity and technical characteristics.

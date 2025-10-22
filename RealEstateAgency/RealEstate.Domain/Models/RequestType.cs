@@ -1,4 +1,4 @@
-﻿namespace RealEstateAgency.Domain.Models;
+﻿namespace RealEstate.Domain.Models;
 
 /// <summary>
 /// Kind of client request: whether a client intends to buy or to sell.

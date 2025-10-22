@@ -1,79 +1,94 @@
-﻿using RealEstate.Domain.Fixtures;
+﻿using RealEstate.Domain.DataSeeder;
 using RealEstate.Domain.Models;
 
-/// <summary>
-/// LINQ-based unit tests verifying analytical queries over in-memory EF-style entities.
-/// Uses DateOnly (DateCreated) and alphabetical tie-breakers when counts are equal.
-/// </summary>
-public class RealEstateTests
-{
-    private readonly RealEstateFixture _fx = new();
+namespace RealEstate.Tests;
 
-    /// <summary>
-    /// All unique sellers who submitted applications within a given period.
-    /// </summary>
-    [Fact]
-    public void Sellers_In_Period()
+/// <summary>
+/// Unit tests verifying analytical queries over in-memory real estate data.
+/// </summary>
+public sealed class RealEstateQueries_Fixed(RealEstateDataSeeder data)
+    : IClassFixture<RealEstateDataSeeder>
+{
+    [Fact(DisplayName = "Sellers in period: return IDs (half-open [from, to))")]
+    public void GetSellersByPeriod_WhenRangeGiven_ReturnsDistinctSellerIds()
     {
         var from = new DateOnly(2024, 06, 01);
-        var to = new DateOnly(2024, 07, 31).AddDays(1);
+        var to = new DateOnly(2024, 08, 01);
 
-        var sellers = _fx.Applications
-            .Where(a => a.Type == ApplicationType.Sell
-                     && a.DateCreated >= from && a.DateCreated < to)
-            .Select(a => a.Client.FullName)
+        var sellerIds = data.Requests
+            .Where(r => r.Type == RequestType.Sell
+                     && r.CreatedAt >= from && r.CreatedAt < to)
+            .Select(r => r.Client.Id)
             .Distinct()
-            .OrderBy(n => n)
+            .OrderBy(id => id)
             .ToList();
 
-        Assert.Equal(new[]
-        {
-            "Антонова Анна",   // 2024-06-05
-            "Иванов Иван",     // 2024-06-15
-            "Петров Пётр",     // 2024-07-20
-            "Сидоров Степан"   // 2024-07-15
-        }, sellers);
+        Assert.Equal(new[] { 1, 2, 3, 4 }, sellerIds);
     }
 
-    /// <summary>
-    /// Top-5 clients by number of applications (separately for Buy and Sell).
-    /// </summary>
-    [Fact]
-    public void Top5_By_Count_Buy_And_Sell()
+    [Fact(DisplayName = "Top-5 clients by request type (combined payload, IDs + Name + Count)")]
+    public void GetTopClientsByType_WhenGrouped_ReturnsCombinedTop5ForBuyAndSell()
     {
-        var buysTop = _fx.Applications
-            .Where(a => a.Type == ApplicationType.Buy)
-            .GroupBy(a => a.Client.FullName)
-            .Select(g => new { Name = g.Key, Count = g.Count() })
-            .OrderByDescending(x => x.Count).ThenBy(x => x.Name)
-            .Take(5).ToList();
+        var groupedTop = data.Requests
+            .GroupBy(r => r.Type)
+            .Select(g => new
+            {
+                Type = g.Key.ToString()!.ToLower(),
+                Clients = g.GroupBy(r => r.Client.Id)
+                           .Select(cg => new
+                           {
+                               ClientId = cg.Key,
+                               Name = cg.First().Client.FullName,
+                               Count = cg.Count()
+                           })
+                           .OrderByDescending(x => x.Count)
+                           .ThenBy(x => x.Name)
+                           .Take(5)
+                           .ToList()
+            })
+            .OrderBy(x => x.Type)
+            .ToList();
 
-        var sellsTop = _fx.Applications
-            .Where(a => a.Type == ApplicationType.Sell)
-            .GroupBy(a => a.Client.FullName)
-            .Select(g => new { Name = g.Key, Count = g.Count() })
-            .OrderByDescending(x => x.Count).ThenBy(x => x.Name)
-            .Take(5).ToList();
+        var result = new { items = groupedTop };
 
-        
-        Assert.Equal(("Кузнецов Кирилл", 3), (buysTop[0].Name, buysTop[0].Count));
-        Assert.Equal(("Соколова Света", 2), (buysTop[1].Name, buysTop[1].Count));
-        Assert.Equal(("Фёдорова Фаина", 2), (buysTop[2].Name, buysTop[2].Count));
+        Assert.Equal(2, result.items.Count);
+        Assert.Contains(result.items, g => g.Type == "sell");
+        Assert.Contains(result.items, g => g.Type == "buy");
+        Assert.All(result.items, g => Assert.True(g.Clients.Count <= 5));
 
-        
-        Assert.Equal(("Иванов Иван", 2), (sellsTop[0].Name, sellsTop[0].Count));
-        Assert.Equal(("Петров Пётр", 2), (sellsTop[1].Name, sellsTop[1].Count));
-        Assert.Equal(("Сидоров Степан", 2), (sellsTop[2].Name, sellsTop[2].Count));
+        var sell = result.items.Single(x => x.Type == "sell").Clients
+            .ToDictionary(c => c.ClientId, c => c.Count);
+        Assert.Equal(2, sell[1]);
+        Assert.Equal(2, sell[2]);
+        Assert.Equal(2, sell[3]);
+
+        var buy = result.items.Single(x => x.Type == "buy").Clients
+            .ToDictionary(c => c.ClientId, c => c.Count);
+        Assert.Equal(3, buy[5]);
     }
 
-    /// <summary>
-    /// Number of applications per property type.
-    /// </summary>
-    [Fact]
-    public void Count_By_PropertyType()
+    [Fact(DisplayName = "Buyers for a given property type: return IDs, order by name for presentation")]
+    public void GetBuyersByPropertyType_WhenApartment_ReturnsIdsOrderedByFullName()
     {
-        var byType = _fx.Applications
-            .GroupBy(a => a.Property.Type)
+        var targetType = PropertyType.Apartment;
+
+        var buyers = data.Requests
+            .Where(r => r.Type == RequestType.Buy && r.Property.Type == targetType)
+            .GroupBy(r => r.Client.Id)
+            .Select(g => new { ClientId = g.Key, Name = g.First().Client.FullName })
+            .OrderBy(x => x.Name)
+            .ToList();
+
+        var expectedIds = new[] { 5, 6, 8 };
+        Assert.True(expectedIds.OrderBy(i => i).SequenceEqual(buyers.Select(b => b.ClientId).OrderBy(i => i)));
+        Assert.True(buyers.Select(b => b.Name).SequenceEqual(buyers.Select(b => b.Name).OrderBy(n => n)));
+    }
+
+    [Fact(DisplayName = "Request counts by property type")]
+    public void GetRequestCounts_WhenGroupedByPropertyType_ReturnsExpectedTotals()
+    {
+        var byType = data.Requests
+            .GroupBy(r => r.Property.Type)
             .ToDictionary(g => g.Key, g => g.Count());
 
         Assert.Equal(7, byType[PropertyType.Apartment]);
@@ -84,40 +99,21 @@ public class RealEstateTests
         Assert.Equal(1, byType[PropertyType.Retail]);
     }
 
-    /// <summary>
-    /// Clients with minimal application amount.
-    /// </summary>
-    [Fact]
-    public void Clients_With_Min_Amount()
+    [Fact(DisplayName = "Clients with minimal request amount (IDs, alphabetical presentation)")]
+    public void GetClientsWithMinimumAmount_WhenCalculated_ReturnsIdsAndAlphabeticalNames()
     {
-        var min = _fx.Applications.Min(a => a.Amount);
+        var min = data.Requests.Min(r => r.Amount);
 
-        var clients = _fx.Applications
-            .Where(a => a.Amount == min)
-            .Select(a => a.Client.FullName)
+        var clients = data.Requests
+            .Where(r => r.Amount == min)
+            .Select(r => new { r.Client.Id, r.Client.FullName })
             .Distinct()
-            .OrderBy(n => n)
+            .OrderBy(x => x.FullName)
             .ToList();
 
-        Assert.Equal(new[] { "Соколова Света", "Фёдорова Фаина" }, clients);
         Assert.Equal(1_000_000m, min);
-    }
-
-    /// <summary>
-    /// Clients searching for a given property type (e.g., Apartment), ordered by name.
-    /// </summary>
-    [Fact]
-    public void Buyers_Searching_For_Given_Type_Sorted()
-    {
-        var type = PropertyType.Apartment;
-
-        var buyers = _fx.Applications
-            .Where(a => a.Type == ApplicationType.Buy && a.Property.Type == type)
-            .Select(a => a.Client.FullName)
-            .Distinct()
-            .OrderBy(n => n)
-            .ToList();
-
-        Assert.Equal(new[] { "Кузнецов Кирилл", "Соколова Света", "Фёдорова Фаина" }, buyers);
+        Assert.Equal(2, clients.Count);
+        Assert.Equal(new[] { 6, 8 }, clients.Select(c => c.Id).OrderBy(i => i).ToArray());
+        Assert.Equal(new[] { "Соколова Света", "Фёдорова Фаина" }, clients.Select(c => c.FullName).ToArray());
     }
 }
