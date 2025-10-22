@@ -1,27 +1,27 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace RealEstate.Domain.Models;
+﻿namespace RealEstateAgency.Domain.Models;
 
 /// <summary>
-/// EF Core entity representing a client (individual/company).
+/// A client (counterparty) of the real estate agency.
 /// </summary>
-public class Counterparty
+public sealed class Counterparty
 {
-    /// <summary>Primary key (DB-generated).</summary>
-    public required int Id { get; set; }
+    /// <summary>
+    /// Unique identifier of the client.
+    /// </summary>
+    public Guid Id { get; init; } = Guid.NewGuid();
 
-    /// <summary>Full name (for an individual) or legal name (for an organization).</summary>
-    [Required, MaxLength(128)]
-    public required string FullName { get; set; }
+    /// <summary>
+    /// Full name of the client.
+    /// </summary>
+    public required string FullName { get; init; }
 
-    /// <summary>Passport/ID number used for identification.</summary>
-    [Required, MaxLength(32)]
-    public required string PassportNumber { get; set; }
+    /// <summary>
+    /// Passport/ID number of the client.
+    /// </summary>
+    public required string PassportNumber { get; init; }
 
-    /// <summary>Primary contact phone number.</summary>
-    [Required, MaxLength(32)]
-    public required string Phone { get; set; }
-
-    /// <summary>Navigation: applications submitted by the client.</summary>
-    public ICollection<Application> Applications { get; set; } = new List<Application>();
+    /// <summary>
+    /// Contact phone number (e.g., +7-XXX-XXX-XX-XX).
+    /// </summary>
+    public required string Phone { get; init; }
 }
