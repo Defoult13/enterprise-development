@@ -8,7 +8,7 @@ public sealed class Counterparty
     /// <summary>
     /// Integer identifier assigned explicitly in seed/data layer.
     /// </summary>
-    public int Id { get; init; }
+    public required int Id { get; init; }
 
     /// <summary>
     /// Full name of the client.

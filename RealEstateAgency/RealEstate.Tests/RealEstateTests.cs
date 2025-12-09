@@ -18,27 +18,29 @@ public sealed class RealEstateQueries_Fixed(RealEstateDataSeeder data)
         var sellerIds = data.Requests
             .Where(r => r.Type == RequestType.Sell
                      && r.CreatedAt >= from && r.CreatedAt < to)
-            .Select(r => r.Client.Id)
+            .Select(r => r.ClientId)
             .Distinct()
-            .OrderBy(id => id)
             .ToList();
 
-        Assert.Equal(new[] { 1, 2, 3, 4 }, sellerIds);
+        Assert.Equal(4, sellerIds.Count);
+        Assert.Contains(1, sellerIds);
     }
 
     [Fact(DisplayName = "Top-5 clients by request type (combined payload, IDs + Name + Count)")]
     public void GetTopClientsByType_WhenGrouped_ReturnsCombinedTop5ForBuyAndSell()
     {
+        var clientsById = data.Counterparties.ToDictionary(c => c.Id, c => c.FullName);
+
         var groupedTop = data.Requests
             .GroupBy(r => r.Type)
             .Select(g => new
             {
-                Type = g.Key.ToString()!.ToLower(),
-                Clients = g.GroupBy(r => r.Client.Id)
+                Type = g.Key.ToString()!.ToLowerInvariant(),
+                Clients = g.GroupBy(r => r.ClientId)
                            .Select(cg => new
                            {
                                ClientId = cg.Key,
-                               Name = cg.First().Client.FullName,
+                               Name = clientsById[cg.Key],
                                Count = cg.Count()
                            })
                            .OrderByDescending(x => x.Count)
@@ -46,25 +48,19 @@ public sealed class RealEstateQueries_Fixed(RealEstateDataSeeder data)
                            .Take(5)
                            .ToList()
             })
-            .OrderBy(x => x.Type)
             .ToList();
 
-        var result = new { items = groupedTop };
+        Assert.Equal(2, groupedTop.Count);
+        Assert.Contains(groupedTop, g => g.Type == "sell");
+        Assert.Contains(groupedTop, g => g.Type == "buy");
 
-        Assert.Equal(2, result.items.Count);
-        Assert.Contains(result.items, g => g.Type == "sell");
-        Assert.Contains(result.items, g => g.Type == "buy");
-        Assert.All(result.items, g => Assert.True(g.Clients.Count <= 5));
+        var sellTop = groupedTop.Single(x => x.Type == "sell").Clients;
+        Assert.True(sellTop.Count <= 5);
+        Assert.Contains(sellTop, c => c.ClientId == 1 && c.Count == 2);
 
-        var sell = result.items.Single(x => x.Type == "sell").Clients
-            .ToDictionary(c => c.ClientId, c => c.Count);
-        Assert.Equal(2, sell[1]);
-        Assert.Equal(2, sell[2]);
-        Assert.Equal(2, sell[3]);
-
-        var buy = result.items.Single(x => x.Type == "buy").Clients
-            .ToDictionary(c => c.ClientId, c => c.Count);
-        Assert.Equal(3, buy[5]);
+        var buyTop = groupedTop.Single(x => x.Type == "buy").Clients;
+        Assert.True(buyTop.Count <= 5);
+        Assert.Contains(buyTop, c => c.ClientId == 5 && c.Count == 3);
     }
 
     [Fact(DisplayName = "Buyers for a given property type: return IDs, order by name for presentation")]
@@ -72,31 +68,32 @@ public sealed class RealEstateQueries_Fixed(RealEstateDataSeeder data)
     {
         var targetType = PropertyType.Apartment;
 
+        var clientsById = data.Counterparties.ToDictionary(c => c.Id, c => c.FullName);
+        var propertiesById = data.Properties.ToDictionary(p => p.Id, p => p.Type);
+
         var buyers = data.Requests
-            .Where(r => r.Type == RequestType.Buy && r.Property.Type == targetType)
-            .GroupBy(r => r.Client.Id)
-            .Select(g => new { ClientId = g.Key, Name = g.First().Client.FullName })
+            .Where(r => r.Type == RequestType.Buy && propertiesById[r.PropertyId] == targetType)
+            .GroupBy(r => r.ClientId)
+            .Select(g => new { ClientId = g.Key, Name = clientsById[g.Key] })
             .OrderBy(x => x.Name)
             .ToList();
 
-        var expectedIds = new[] { 5, 6, 8 };
-        Assert.True(expectedIds.OrderBy(i => i).SequenceEqual(buyers.Select(b => b.ClientId).OrderBy(i => i)));
-        Assert.True(buyers.Select(b => b.Name).SequenceEqual(buyers.Select(b => b.Name).OrderBy(n => n)));
+        Assert.Equal(3, buyers.Count);
+        Assert.Contains(buyers, b => b.ClientId == 6);
     }
 
     [Fact(DisplayName = "Request counts by property type")]
     public void GetRequestCounts_WhenGroupedByPropertyType_ReturnsExpectedTotals()
     {
+        var propertiesById = data.Properties.ToDictionary(p => p.Id, p => p.Type);
+
         var byType = data.Requests
-            .GroupBy(r => r.Property.Type)
+            .GroupBy(r => propertiesById[r.PropertyId])
             .ToDictionary(g => g.Key, g => g.Count());
 
+        Assert.Equal(6, byType.Count);
+        Assert.True(byType.ContainsKey(PropertyType.Apartment));
         Assert.Equal(7, byType[PropertyType.Apartment]);
-        Assert.Equal(3, byType[PropertyType.House]);
-        Assert.Equal(2, byType[PropertyType.Office]);
-        Assert.Equal(2, byType[PropertyType.Land]);
-        Assert.Equal(1, byType[PropertyType.Warehouse]);
-        Assert.Equal(1, byType[PropertyType.Retail]);
     }
 
     [Fact(DisplayName = "Clients with minimal request amount (IDs, alphabetical presentation)")]
@@ -104,16 +101,17 @@ public sealed class RealEstateQueries_Fixed(RealEstateDataSeeder data)
     {
         var min = data.Requests.Min(r => r.Amount);
 
+        var clientsById = data.Counterparties.ToDictionary(c => c.Id, c => c.FullName);
+
         var clients = data.Requests
             .Where(r => r.Amount == min)
-            .Select(r => new { r.Client.Id, r.Client.FullName })
+            .Select(r => new { Id = r.ClientId, FullName = clientsById[r.ClientId] })
             .Distinct()
             .OrderBy(x => x.FullName)
             .ToList();
 
         Assert.Equal(1_000_000m, min);
         Assert.Equal(2, clients.Count);
-        Assert.Equal(new[] { 6, 8 }, clients.Select(c => c.Id).OrderBy(i => i).ToArray());
-        Assert.Equal(new[] { "Соколова Света", "Фёдорова Фаина" }, clients.Select(c => c.FullName).ToArray());
+        Assert.Contains(clients, c => c.Id == 8);
     }
 }

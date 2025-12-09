@@ -8,17 +8,17 @@ public sealed class RealEstateObject
     /// <summary>
     /// Integer identifier assigned explicitly in seed/data layer.
     /// </summary>
-    public int Id { get; init; }
+    public required int Id { get; init; }
 
     /// <summary>
     /// Type of the object (apartment, house, office, etc.).
     /// </summary>
-    public required PropertyType Type { get; init; }
+    public required PropertyType Type { get; set; }
 
     /// <summary>
     /// Purpose of the object (residential or commercial).
     /// </summary>
-    public required PropertyPurpose Purpose { get; init; }
+    public required PropertyPurpose Purpose { get; set; }
 
     /// <summary>
     /// Cadastral number of the object.
@@ -38,7 +38,7 @@ public sealed class RealEstateObject
     /// <summary>
     /// Total area in square meters.
     /// </summary>
-    public required decimal TotalAreaSqM { get; init; }
+    public required double TotalAreaSqM { get; init; }
 
     /// <summary>
     /// Number of rooms (applicable for residential units).
@@ -48,7 +48,7 @@ public sealed class RealEstateObject
     /// <summary>
     /// Ceiling height in meters.
     /// </summary>
-    public required decimal CeilingHeightM { get; init; }
+    public double? CeilingHeightM { get; init; }
 
     /// <summary>
     /// Floor number where the unit is located (null for land/house).
