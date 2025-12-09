@@ -1,4 +1,4 @@
-﻿namespace RealEstate.Domain.Models;
+﻿namespace RealEstate.Domain.Shared.Enums;
 
 /// <summary>
 /// Specific type of a real-estate object.

@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstate.Tests", "RealEst
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstate.Infrastructure.EfCore", "RealEstate.Infrastructure.EfCore\RealEstate.Infrastructure.EfCore.csproj", "{660832B4-1394-4755-8CC7-DAA5FC10B1B9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstate.Application.Contracts", "RealEstate.Application.Contracts\RealEstate.Application.Contracts.csproj", "{DBA1F3C1-B634-4F88-ADF7-527FCCAE051B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstate.Domain.Shared", "RealEstate.Domain.Shared\RealEstate.Domain.Shared.csproj", "{37BC2242-7754-4CB6-B9A5-9D53CBA059FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{660832B4-1394-4755-8CC7-DAA5FC10B1B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{660832B4-1394-4755-8CC7-DAA5FC10B1B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{660832B4-1394-4755-8CC7-DAA5FC10B1B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBA1F3C1-B634-4F88-ADF7-527FCCAE051B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBA1F3C1-B634-4F88-ADF7-527FCCAE051B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBA1F3C1-B634-4F88-ADF7-527FCCAE051B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBA1F3C1-B634-4F88-ADF7-527FCCAE051B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37BC2242-7754-4CB6-B9A5-9D53CBA059FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37BC2242-7754-4CB6-B9A5-9D53CBA059FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37BC2242-7754-4CB6-B9A5-9D53CBA059FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37BC2242-7754-4CB6-B9A5-9D53CBA059FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

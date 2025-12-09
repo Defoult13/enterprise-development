@@ -1,4 +1,6 @@
-﻿namespace RealEstate.Domain.Models;
+﻿using RealEstate.Domain.Shared.Enums;
+
+namespace RealEstate.Domain.Models;
 
 /// <summary>
 /// A client request to buy or sell a specific real-estate object.

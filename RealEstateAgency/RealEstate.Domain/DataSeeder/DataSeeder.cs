@@ -1,4 +1,5 @@
 ﻿using RealEstate.Domain.Models;
+using RealEstate.Domain.Shared.Enums;
 
 namespace RealEstate.Domain.DataSeeder;
 

@@ -1,4 +1,4 @@
-﻿namespace RealEstate.Domain.Models;
+﻿namespace RealEstate.Domain.Shared.Enums;
 
 /// <summary>
 /// Functional purpose of a real-estate object.

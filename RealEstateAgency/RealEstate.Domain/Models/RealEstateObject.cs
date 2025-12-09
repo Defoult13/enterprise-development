@@ -1,4 +1,6 @@
-﻿namespace RealEstate.Domain.Models;
+﻿using RealEstate.Domain.Shared.Enums;
+
+namespace RealEstate.Domain.Models;
 
 /// <summary>
 /// A real-estate object with cadastral identity and technical characteristics.

@@ -1,5 +1,5 @@
 ﻿using RealEstate.Domain.DataSeeder;
-using RealEstate.Domain.Models;
+using RealEstate.Domain.Shared.Enums;
 
 namespace RealEstate.Tests;
 
