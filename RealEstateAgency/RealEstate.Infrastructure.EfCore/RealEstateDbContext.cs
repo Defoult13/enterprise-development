@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RealEstate.Domain.DataSeeder;
 using RealEstate.Domain.Models;
 
 namespace RealEstate.Infrastructure.EfCore;
@@ -8,7 +9,7 @@ namespace RealEstate.Infrastructure.EfCore;
 /// Configures PostgreSQL naming, keys, relationships, and column constraints.
 /// </summary>
 /// <param name="options">DbContext options.</param>
-public class RealEstateDbContext(DbContextOptions<RealEstateDbContext> options) : DbContext(options)
+public class RealEstateDbContext(DbContextOptions<RealEstateDbContext> options, RealEstateDataSeeder dataSeeder) : DbContext(options)
 {
     /// <summary>
     /// Counterparties (clients) table access.
@@ -60,6 +61,8 @@ public class RealEstateDbContext(DbContextOptions<RealEstateDbContext> options) 
 
             entity.HasIndex(e => e.PassportNumber)
                 .HasDatabaseName("ix_counterparty_passport_number");
+
+            entity.HasData(dataSeeder.Counterparties);
         });
 
         modelBuilder.Entity<RealEstateObject>(entity =>
@@ -113,6 +116,8 @@ public class RealEstateDbContext(DbContextOptions<RealEstateDbContext> options) 
             entity.Property(e => e.HasEncumbrances)
                 .HasColumnName("has_encumbrances")
                 .IsRequired();
+
+            entity.HasData(dataSeeder.Properties);
         });
 
         modelBuilder.Entity<RealEstateRequest>(entity =>
@@ -159,11 +164,13 @@ public class RealEstateDbContext(DbContextOptions<RealEstateDbContext> options) 
                 .HasColumnType("date")
                 .IsRequired();
 
-            entity.HasIndex("client_id")
+            entity.HasIndex(e => e.ClientId)
                 .HasDatabaseName("ix_real_estate_request_client_id");
 
-            entity.HasIndex("property_id")
+            entity.HasIndex(e => e.PropertyId)
                 .HasDatabaseName("ix_real_estate_request_property_id");
+
+            entity.HasData(dataSeeder.Requests);
         });
     }
 }

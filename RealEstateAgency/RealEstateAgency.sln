@@ -15,6 +15,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstate.Domain.Shared", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstate.Application", "RealEstate.Application\RealEstate.Application.csproj", "{7F090D23-55DA-4B26-B537-42DA339E1AAE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstate.Api.Host", "RealEstate.Api.Host\RealEstate.Api.Host.csproj", "{061E950B-2785-1F84-81B8-8F1F00FA7C6A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstate.AppHost", "RealEstate.AppHost\RealEstate.AppHost.csproj", "{5CE1A994-AB27-49CA-8EB5-116D831F6DA9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstate.ServiceDefaults", "RealEstate.ServiceDefaults\RealEstate.ServiceDefaults.csproj", "{7F9DBAF2-08A7-7390-FBBC-4310C54B9462}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +51,18 @@ Global
 		{7F090D23-55DA-4B26-B537-42DA339E1AAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F090D23-55DA-4B26-B537-42DA339E1AAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F090D23-55DA-4B26-B537-42DA339E1AAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{061E950B-2785-1F84-81B8-8F1F00FA7C6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{061E950B-2785-1F84-81B8-8F1F00FA7C6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{061E950B-2785-1F84-81B8-8F1F00FA7C6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{061E950B-2785-1F84-81B8-8F1F00FA7C6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CE1A994-AB27-49CA-8EB5-116D831F6DA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CE1A994-AB27-49CA-8EB5-116D831F6DA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CE1A994-AB27-49CA-8EB5-116D831F6DA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CE1A994-AB27-49CA-8EB5-116D831F6DA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F9DBAF2-08A7-7390-FBBC-4310C54B9462}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F9DBAF2-08A7-7390-FBBC-4310C54B9462}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F9DBAF2-08A7-7390-FBBC-4310C54B9462}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F9DBAF2-08A7-7390-FBBC-4310C54B9462}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
