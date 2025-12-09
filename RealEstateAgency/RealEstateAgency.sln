@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstate.Application.Cont
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstate.Domain.Shared", "RealEstate.Domain.Shared\RealEstate.Domain.Shared.csproj", "{37BC2242-7754-4CB6-B9A5-9D53CBA059FD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstate.Application", "RealEstate.Application\RealEstate.Application.csproj", "{7F090D23-55DA-4B26-B537-42DA339E1AAE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{37BC2242-7754-4CB6-B9A5-9D53CBA059FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37BC2242-7754-4CB6-B9A5-9D53CBA059FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37BC2242-7754-4CB6-B9A5-9D53CBA059FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F090D23-55DA-4B26-B537-42DA339E1AAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F090D23-55DA-4B26-B537-42DA339E1AAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F090D23-55DA-4B26-B537-42DA339E1AAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F090D23-55DA-4B26-B537-42DA339E1AAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

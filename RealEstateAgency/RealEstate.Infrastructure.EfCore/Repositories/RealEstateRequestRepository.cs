@@ -18,8 +18,8 @@ public class RealEstateRequestRepository(RealEstateDbContext db) : IRepository<R
     }
 
     /// <inheritdoc />
-    public Task<RealEstateRequest?> Get(int entityId) =>
-        db.Requests.FirstOrDefaultAsync(x => x.Id == entityId);
+    public async Task<RealEstateRequest?> Get(int entityId) =>
+        await db.Requests.FirstOrDefaultAsync(x => x.Id == entityId);
 
     /// <inheritdoc />
     public async Task<IList<RealEstateRequest>> GetAll() =>

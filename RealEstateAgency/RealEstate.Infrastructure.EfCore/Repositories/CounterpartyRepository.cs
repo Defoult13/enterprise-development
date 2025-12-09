@@ -18,8 +18,8 @@ public class CounterpartyRepository(RealEstateDbContext db) : IRepository<Counte
     }
 
     /// <inheritdoc />
-    public Task<Counterparty?> Get(int entityId) =>
-        db.Counterparties.FirstOrDefaultAsync(x => x.Id == entityId);
+    public async Task<Counterparty?> Get(int entityId) =>
+        await db.Counterparties.FirstOrDefaultAsync(x => x.Id == entityId);
 
     /// <inheritdoc />
     public async Task<IList<Counterparty>> GetAll() =>
