@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using RealEstate.Application.Contracts;
 using RealEstate.Application.Contracts.Counterparties;
+using RealEstate.Application.Contracts.RealEstateRequests;
 using RealEstate.Domain;
 using RealEstate.Domain.Models;
 
@@ -10,9 +10,10 @@ namespace RealEstate.Application.Services;
 /// Service that provides CRUD operations for <see cref="Counterparty"/> using DTOs and a repository.
 /// </summary>
 /// <param name="repo">Repository for accessing and modifying counterparties.</param>
+/// <param name="requestRepo">Repository for accessing and modifying requests.</param>
 /// <param name="mapper">Mapper used to convert between entities and DTOs.</param>
-public class CounterpartyService(IRepository<Counterparty, int> repo, IMapper mapper)
-    : IApplicationService<CounterpartyDto, CounterpartyCreateUpdateDto, int>
+public class CounterpartyService(IRepository<Counterparty, int> repo, IRepository<RealEstateRequest, int> requestRepo, IMapper mapper)
+    : ICounterpartyService
 {
     /// <summary>
     /// Creates a counterparty from the provided DTO.
@@ -69,4 +70,22 @@ public class CounterpartyService(IRepository<Counterparty, int> repo, IMapper ma
     /// <param name="dtoId">Counterparty id.</param>
     /// <returns>True if deleted; otherwise false.</returns>
     public async Task<bool> Delete(int dtoId) => await repo.Delete(dtoId);
+
+    /// <summary>
+    /// Gets all requests created by the specified counterparty.
+    /// </summary>
+    /// <param name="id">Counterparty identifier.</param>
+    /// <returns>List of request DTOs created by the given counterparty.</returns>
+    public async Task<IList<RealEstateRequestDto>> GetRealEstateRequests(int id)
+    {
+        var counterparty = await repo.Get(id) ?? throw new KeyNotFoundException($"Counterparty with id={id} was not found.");
+
+        var requests = await requestRepo.GetAll();
+
+        var counterpartyRequests = requests
+            .Where(r  => r.ClientId == id)
+            .ToList();
+
+        return mapper.Map<IList<RealEstateRequestDto>>(counterpartyRequests);
+    }
 }

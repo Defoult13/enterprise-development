@@ -28,9 +28,9 @@ builder.Services.AddScoped<IRepository<RealEstateObject, int>, RealEstateObjectR
 builder.Services.AddScoped<IRepository<RealEstateRequest, int>, RealEstateRequestRepository>();
 
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
-builder.Services.AddScoped<IApplicationService<CounterpartyDto, CounterpartyCreateUpdateDto, int>, CounterpartyService>();
-builder.Services.AddScoped<IApplicationService<RealEstateObjectDto, RealEstateObjectCreateUpdateDto, int>, RealEstateObjectService>();
-builder.Services.AddScoped<IRealEstateRequestService, RealEstateRequestService>();
+builder.Services.AddScoped<ICounterpartyService, CounterpartyService>();
+builder.Services.AddScoped<IRealEstateObjectService, RealEstateObjectService>();
+builder.Services.AddScoped<IApplicationService<RealEstateRequestDto, RealEstateRequestCreateUpdateDto, int>, RealEstateRequestService>();
 
 builder.Services.AddControllers().AddJsonOptions(o =>
 {

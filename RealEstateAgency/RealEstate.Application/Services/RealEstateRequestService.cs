@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
-using RealEstate.Application.Contracts.Counterparties;
-using RealEstate.Application.Contracts.RealEstateObjects;
+using RealEstate.Application.Contracts;
 using RealEstate.Application.Contracts.RealEstateRequests;
 using RealEstate.Domain;
 using RealEstate.Domain.Models;
@@ -20,7 +19,7 @@ public class RealEstateRequestService(
     IRepository<Counterparty, int> counterpartyRepo,
     IRepository<RealEstateObject, int> realEstateObjectRepo,
     IMapper mapper)
-    : IRealEstateRequestService
+    : IApplicationService<RealEstateRequestDto, RealEstateRequestCreateUpdateDto, int>
 {
     /// <summary>
     /// Creates a request from the provided DTO.
@@ -89,26 +88,4 @@ public class RealEstateRequestService(
     /// <param name="dtoId">Request id.</param>
     /// <returns>True if deleted; otherwise false.</returns>
     public async Task<bool> Delete(int dtoId) => await requestRepo.Delete(dtoId);
-
-    /// <summary>
-    /// Gets a counterparty by id.
-    /// </summary>
-    /// <param name="id">Counterparty id.</param>
-    /// <returns>Counterparty DTO.</returns>
-    public async Task<CounterpartyDto> GetCounterparty(int id)
-    {
-        var entity = await counterpartyRepo.Get(id) ?? throw new KeyNotFoundException($"Counterparty with id={id} was not found.");
-        return mapper.Map<CounterpartyDto>(entity);
-    }
-
-    /// <summary>
-    /// Gets a real-estate object by id.
-    /// </summary>
-    /// <param name="id">Real-estate object id.</param>
-    /// <returns>Real-estate object DTO.</returns>
-    public async Task<RealEstateObjectDto> GetRealEstate(int id)
-    {
-        var entity = await realEstateObjectRepo.Get(id) ?? throw new KeyNotFoundException($"RealEstateObject with id={id} was not found.");
-        return mapper.Map<RealEstateObjectDto>(entity);
-    }
 }
