@@ -32,8 +32,16 @@ public class KafkaConsumer(
     /// <param name="stoppingToken">Cancellation token.</param>
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        consumer.Subscribe(_settings.TopicName);
-        logger.LogInformation("KafkaConsumer started on topic {TopicName}", _settings.TopicName);
+        try
+        {
+            consumer.Subscribe(_settings.TopicName);
+            logger.LogInformation("KafkaConsumer started on topic {TopicName}", _settings.TopicName);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "KafkaConsumer failed to subscribe. TopicName={TopicName}", _settings.TopicName);
+            return;
+        }
 
         try
         {
@@ -102,6 +110,11 @@ public class KafkaConsumer(
 
                         CommitIfNeeded(message);
                     }
+                }
+                catch (ConsumeException ex) when (ex.Error.Code == ErrorCode.UnknownTopicOrPart)
+                {
+                    logger.LogWarning("Kafka topic is not available yet. TopicName={TopicName}. Retrying...", _settings.TopicName);
+                    await Task.Delay(1000, stoppingToken);
                 }
                 catch (ConsumeException ex)
                 {

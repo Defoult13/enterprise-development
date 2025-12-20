@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RealEstate.Api.Host\RealEstate.Api.Host.csproj" />
+    <ProjectReference Include="..\RealEstate.Generator.Kafka.Host\RealEstate.Generator.Kafka.Host.csproj" />
   </ItemGroup>
 
 </Project>
