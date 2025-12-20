@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\RealEstate.Application\RealEstate.Application.csproj" />
     <ProjectReference Include="..\RealEstate.Infrastructure.EfCore\RealEstate.Infrastructure.EfCore.csproj" />
+    <ProjectReference Include="..\RealEstate.Infrastructure.Kafka\RealEstate.Infrastructure.Kafka.csproj" />
     <ProjectReference Include="..\RealEstate.ServiceDefaults\RealEstate.ServiceDefaults.csproj" />
   </ItemGroup>
 
