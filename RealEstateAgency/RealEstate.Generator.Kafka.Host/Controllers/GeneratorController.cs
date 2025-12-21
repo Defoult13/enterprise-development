@@ -1,5 +1,6 @@
-﻿using RealEstate.Generator.Kafka.Host.Generator;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using RealEstate.Application.Contracts.Generator;
+using RealEstate.Generator.Kafka.Host.Generator;
 
 namespace RealEstate.Generator.Kafka.Host.Controllers;
 
@@ -26,7 +27,7 @@ public class GeneratorController(
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(500)]
-    public async Task<ActionResult<object>> GenerateRequests(
+    public async Task<ActionResult<GenerateRequestsResultDto>> GenerateRequests(
         [FromQuery] int totalCount,
         [FromQuery] int batchSize,
         [FromQuery] int delayMs,
@@ -70,28 +71,27 @@ public class GeneratorController(
 
             logger.LogInformation("Generation finished. TotalSent={TotalSent}, Batches={Batches}", sent, batches);
 
-            return Ok(new
-            {
-                totalRequested = totalCount,
-                totalSent = sent,
-                batchSize,
-                delayMs,
-                batches
-            });
+            return Ok(new GenerateRequestsResultDto(
+                TotalRequested: totalCount,
+                TotalSent: sent,
+                BatchSize: batchSize,
+                DelayMs: delayMs,
+                Batches: batches,
+                Canceled: false
+            ));
         }
         catch (OperationCanceledException)
         {
             logger.LogInformation("Generation was canceled. TotalSent={TotalSent}/{TotalCount}", sent, totalCount);
 
-            return Ok(new
-            {
-                totalRequested = totalCount,
-                totalSent = sent,
-                batchSize,
-                delayMs,
-                batches,
-                canceled = true
-            });
+            return Ok(new GenerateRequestsResultDto(
+                TotalRequested: totalCount,
+                TotalSent: sent,
+                BatchSize: batchSize,
+                DelayMs: delayMs,
+                Batches: batches,
+                Canceled: true
+            ));
         }
         catch (Exception ex)
         {

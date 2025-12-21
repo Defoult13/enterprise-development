@@ -50,27 +50,25 @@ public class KafkaProducer(
 
                 await Task.Delay(_settings.RetryDelayMs, cancellationToken);
             }
-        }
+            catch (ProduceException<Null, string> ex)
+            {
+                logger.LogError(ex,
+                    "Kafka produce failed after {MaxAttempts} attempts. Reason={Reason}. ClientId={ClientId}, PropertyId={PropertyId}",
+                    _settings.MaxProduceAttempts, ex.Error.Reason, dto.ClientId, dto.PropertyId);
 
-        try
-        {
-            await producer.ProduceAsync(_settings.TopicName, new Message<Null, string> { Value = payload }, cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Kafka produce failed after {MaxAttempts} attempts.", _settings.MaxProduceAttempts);
-            throw;
+                throw;
+            }
         }
     }
 
     /// <summary>
-    /// Sends a batch of request DTOs as JSON messages to Kafka.
+    /// Sends a batch of request DTOs as JSON messages to Kafka in parallel.
     /// </summary>
     /// <param name="dtos">Request DTOs to send.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     public async Task ProduceMany(IList<RealEstateRequestCreateUpdateDto> dtos, CancellationToken cancellationToken = default)
     {
-        foreach (var dto in dtos)
-            await Produce(dto, cancellationToken);
+        var tasks = dtos.Select(dto => Produce(dto, cancellationToken));
+        await Task.WhenAll(tasks);
     }
 }

@@ -8,7 +8,7 @@ public class KafkaConsumerSettings
     /// <summary>
     /// Kafka topic name used for producing and consuming messages.
     /// </summary>
-    public string TopicName { get; init; } = string.Empty;
+    public string TopicName { get; init; } = "real-estate";
 
     /// <summary>
     /// Enables Kafka auto-commit for the consumer.

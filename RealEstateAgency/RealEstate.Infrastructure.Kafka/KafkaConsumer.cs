@@ -135,6 +135,7 @@ public class KafkaConsumer(
         {
             try
             {
+                consumer.Unsubscribe();
                 consumer.Close();
             }
             catch (Exception ex)

@@ -8,7 +8,7 @@ public class KafkaProducerSettings
     /// <summary>
     /// Kafka topic name used for producing messages.
     /// </summary>
-    public string TopicName { get; init; } = string.Empty;
+    public string TopicName { get; init; } = "real-estate";
 
     /// <summary>
     /// Maximum number of attempts to send a message.
